@@ -290,6 +290,9 @@ func _on_enemy_weapon_hitbox_body_entered(body: Node) -> void:
 		return
 	if body == owner_body or body.is_in_group("enemy"):
 		return
+	# Враги игнорируют манекенов (dummy_enemy) - не атакуют их
+	if body.is_in_group("dummy_enemy"):
+		return
 	if body.has_method("is_blocking_active") and body.is_blocking_active(attack_dir):
 		hit_registered = true
 		if body.has_method("notify_successful_block"):
@@ -405,9 +408,19 @@ func enemy_on_block() -> void:
 	ai_state = "IDLE"
 
 func enemy_on_take_dmg(amount: float, attacker_pos: Vector3 = Vector3.ZERO) -> void:
-	if attack_delay_timer > 0.05:
+	# Проверка на прерывание атаки только если враг не в состоянии атаки (WINDUP/SWING)
+	# Это предотвращает ложное прерывание атаки при получении урона во время WINDUP или SWING
+	if ai_state not in ["WINDUP", "SWING"] and attack_delay_timer > 0.05:
 		return
-	attack_delay_timer = attack_delay_duration
+	
+	# Если враг уже в процессе атаки (WINDUP или SWING), не прерываем её получением урона
+	# Атака будет завершена нормально, а откат начнётся после завершения
+	if ai_state in ["WINDUP", "SWING"]:
+		_trace("ENEMY_DAMAGE_DURING_ATTACK | ignoring delay timer")
+		# Не устанавливаем attack_delay_timer, чтобы не прерывать атаку
+	else:
+		attack_delay_timer = attack_delay_duration
+	
 	# Полученный урон прерывает visual attack; статический Area3D должен
 	# выключиться, даже если clip не дошёл до своего disable Method Track.
 	animation_disable_weapon_hitbox()

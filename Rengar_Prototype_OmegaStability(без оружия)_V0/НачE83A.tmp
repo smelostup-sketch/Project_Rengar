@@ -1,0 +1,103 @@
+[gd_scene load_steps=18 format=3 uid="uid://jxsxm4a8vmd6"]
+
+[ext_resource type="Script" path="res://ThirdPersonCamera.gd" id="1_50iwr"]
+[ext_resource type="Script" path="res://Player3d.gd" id="2_tlxtb"]
+[ext_resource type="Script" path="res://HealtComponent.gd" id="3_w7mdd"]
+[ext_resource type="Script" path="res://CombatComponent.gd" id="4_cwbh1"]
+[ext_resource type="Script" path="res://StateComponent.gd" id="5_ud08r"]
+[ext_resource type="Script" path="res://EnemyController.gd" id="6_d4rh6"]
+[ext_resource type="Script" path="res://PlayerUI.gd" id="7_e7cxm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_26vdl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_luuwl"]
+albedo_color = Color(1, 0.215686, 0.211765, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xh4up"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_roap7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nfggj"]
+albedo_color = Color(1, 0.2, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rxfx0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_omun6"]
+albedo_color = Color(0.633001, 0.65002, 0.476745, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hohev"]
+material = SubResource("StandardMaterial3D_omun6")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l1bxr"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bwk1c"]
+
+[node name="World" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 5)
+script = ExtResource("1_50iwr")
+target = NodePath("../PLayerCharacterBody3D")
+
+[node name="PLayerCharacterBody3D" type="CharacterBody3D" parent="." groups=["player"]]
+script = ExtResource("2_tlxtb")
+
+[node name="VisualCube" type="MeshInstance3D" parent="PLayerCharacterBody3D"]
+mesh = SubResource("BoxMesh_26vdl")
+surface_material_override/0 = SubResource("StandardMaterial3D_luuwl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PLayerCharacterBody3D"]
+shape = SubResource("BoxShape3D_xh4up")
+
+[node name="FrontMarker" type="MeshInstance3D" parent="PLayerCharacterBody3D"]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, -0.6)
+mesh = SubResource("BoxMesh_roap7")
+surface_material_override/0 = SubResource("StandardMaterial3D_nfggj")
+
+[node name="HealthComponent" type="Node" parent="PLayerCharacterBody3D"]
+script = ExtResource("3_w7mdd")
+
+[node name="CombatComponent" type="Node" parent="PLayerCharacterBody3D"]
+script = ExtResource("4_cwbh1")
+
+[node name="StateComponent" type="Node" parent="PLayerCharacterBody3D"]
+script = ExtResource("5_ud08r")
+
+[node name="EnemyCharacterBody3D" type="CharacterBody3D" parent="." groups=["enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.7689)
+collision_layer = 2
+script = ExtResource("6_d4rh6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyCharacterBody3D"]
+shape = SubResource("BoxShape3D_rxfx0")
+
+[node name="EnemyVisual" type="MeshInstance3D" parent="EnemyCharacterBody3D"]
+layers = 2
+mesh = SubResource("BoxMesh_hohev")
+
+[node name="HealthComponent" type="Node" parent="EnemyCharacterBody3D"]
+script = ExtResource("3_w7mdd")
+
+[node name="CombatComponent" type="Node" parent="EnemyCharacterBody3D"]
+script = ExtResource("4_cwbh1")
+
+[node name="StateComponent" type="Node" parent="EnemyCharacterBody3D"]
+script = ExtResource("5_ud08r")
+
+[node name="Bush" type="Area3D" parent="." groups=["bush"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bush"]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0)
+shape = SubResource("BoxShape3D_l1bxr")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -0.5, -5)
+mesh = SubResource("PlaneMesh_bwk1c")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.360961, 2.14581, 0.108824)
+light_energy = 1.5
+
+[node name="PlayerUI" type="CanvasLayer" parent="." groups=["player_ui"]]
+script = ExtResource("7_e7cxm")

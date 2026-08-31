@@ -1,0 +1,134 @@
+[gd_scene load_steps=22 format=3 uid="uid://jxsxm4a8vmd6"]
+
+[ext_resource type="Script" path="res://ThirdPersonCamera.gd" id="1_50iwr"]
+[ext_resource type="Script" path="res://Player3d.gd" id="2_tlxtb"]
+[ext_resource type="Script" path="res://HealtComponent.gd" id="3_w7mdd"]
+[ext_resource type="Script" path="res://CombatComponent.gd" id="4_cwbh1"]
+[ext_resource type="Script" path="res://StateComponent.gd" id="5_ud08r"]
+[ext_resource type="Script" path="res://EnemyController.gd" id="6_d4rh6"]
+[ext_resource type="Script" path="res://StacksComponent.gd" id="6_vqmsf"]
+[ext_resource type="Script" path="res://PlayerUI.gd" id="7_e7cxm"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_26vdl"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_luuwl"]
+albedo_color = Color(1, 0.215686, 0.211765, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xh4up"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_roap7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nfggj"]
+albedo_color = Color(1, 0.2, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rxfx0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_omun6"]
+albedo_color = Color(0.633001, 0.65002, 0.476745, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hohev"]
+material = SubResource("StandardMaterial3D_omun6")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bwk1c"]
+size = Vector2(6, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l1bxr"]
+size = Vector3(6, 6, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fk5tx"]
+size = Vector3(40, 2, 40)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d1gac"]
+albedo_color = Color(1, 1, 0.639216, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_us6wj"]
+material = SubResource("StandardMaterial3D_d1gac")
+size = Vector3(40, 1, 40)
+
+[node name="World" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 5)
+script = ExtResource("1_50iwr")
+target = NodePath("../PLayerCharacterBody3D")
+
+[node name="PLayerCharacterBody3D" type="CharacterBody3D" parent="." groups=["player"]]
+script = ExtResource("2_tlxtb")
+
+[node name="VisualCube" type="MeshInstance3D" parent="PLayerCharacterBody3D"]
+mesh = SubResource("BoxMesh_26vdl")
+surface_material_override/0 = SubResource("StandardMaterial3D_luuwl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PLayerCharacterBody3D"]
+shape = SubResource("BoxShape3D_xh4up")
+
+[node name="FrontMarker" type="MeshInstance3D" parent="PLayerCharacterBody3D"]
+transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, -0.6)
+mesh = SubResource("BoxMesh_roap7")
+surface_material_override/0 = SubResource("StandardMaterial3D_nfggj")
+
+[node name="HealthComponent" type="Node" parent="PLayerCharacterBody3D"]
+script = ExtResource("3_w7mdd")
+
+[node name="CombatComponent" type="Node" parent="PLayerCharacterBody3D"]
+script = ExtResource("4_cwbh1")
+
+[node name="StateComponent" type="Node" parent="PLayerCharacterBody3D"]
+script = ExtResource("5_ud08r")
+
+[node name="StacksComponent" type="Node" parent="PLayerCharacterBody3D"]
+script = ExtResource("6_vqmsf")
+
+[node name="EnemyCharacterBody3D" type="CharacterBody3D" parent="." groups=["enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.7689)
+collision_layer = 2
+script = ExtResource("6_d4rh6")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyCharacterBody3D"]
+shape = SubResource("BoxShape3D_rxfx0")
+
+[node name="EnemyVisual" type="MeshInstance3D" parent="EnemyCharacterBody3D"]
+layers = 2
+mesh = SubResource("BoxMesh_hohev")
+
+[node name="HealthComponent" type="Node" parent="EnemyCharacterBody3D"]
+script = ExtResource("3_w7mdd")
+
+[node name="CombatComponent" type="Node" parent="EnemyCharacterBody3D"]
+script = ExtResource("4_cwbh1")
+
+[node name="StateComponent" type="Node" parent="EnemyCharacterBody3D"]
+script = ExtResource("5_ud08r")
+jump_force = 15.0
+leap_time_to_target = 0.2
+min_leap_speed = 5.0
+max_leap_speed = 14.0
+
+[node name="Bush" type="Area3D" parent="." groups=["bush"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="BushMarker" type="MeshInstance3D" parent="Bush"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
+mesh = SubResource("PlaneMesh_bwk1c")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bush"]
+shape = SubResource("BoxShape3D_l1bxr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.360961, 2.14581, 0.108824)
+light_energy = 1.5
+
+[node name="PlayerUI" type="CanvasLayer" parent="." groups=["player_ui"]]
+script = ExtResource("7_e7cxm")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+shape = SubResource("BoxShape3D_fk5tx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+mesh = SubResource("BoxMesh_us6wj")

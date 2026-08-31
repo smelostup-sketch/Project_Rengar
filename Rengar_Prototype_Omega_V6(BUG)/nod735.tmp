@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://be5xolngaxdx0"]
+
+[ext_resource type="Script" path="res://mesh_instancee_3d.gd" id="1_pl1ip"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_p0n7m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ip74b"]
+albedo_color = Color(1, 0.109804, 0.117647, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bwk1c"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_p0n7m")
+surface_material_override/0 = SubResource("StandardMaterial3D_ip74b")
+script = ExtResource("1_pl1ip")
+
+[node name="Camera3D" type="Camera3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 5)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+light_energy = 1.5
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("PlaneMesh_bwk1c")

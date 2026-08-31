@@ -40,6 +40,14 @@ func _physics_process(delta: float) -> void:
 	var player = get_tree().get_first_node_in_group("player")
 	if not player or not is_instance_valid(player): return
 
+	# Игнорируем манекенов (dummy_enemy) при поиске цели - враги не должны атаковать манекен
+	var dummy_enemies = get_tree().get_nodes_in_group("dummy_enemy")
+	for dummy in dummy_enemies:
+		if dummy == self or not is_instance_valid(dummy):
+			continue
+		# Пропускаем манекены как потенциальные цели
+		pass
+
 	# 1️⃣ ГРАВИТАЦИЯ (Применяем ВСЕГДА до move_and_slide, чтобы враг не парил в стане/откате)
 	if not is_on_floor():
 		velocity.y -= gravity * delta

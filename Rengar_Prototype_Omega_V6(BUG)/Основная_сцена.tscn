@@ -394,6 +394,9 @@ script = ExtResource("12_mixamo_anim")
 libraries = {
 "": SubResource("AnimationLibrary_f4t0f")
 }
+autoplay = "Idle"
+
+[node name="VisualModel/AnimationPlayer" type="AnimationPlayer" parent="PLayerCharacterBody3D/VisualModel"]
 
 [node name="PlayerAnimTree" type="AnimationTree" parent="PLayerCharacterBody3D"]
 root_node = NodePath("../VisualModel")
@@ -413,6 +416,7 @@ shape = SubResource("BoxShape3D_xh4up")
 [node name="EnemyVisual" parent="EnemyCharacterBody3D" instance=ExtResource("10_ybot")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
 script = ExtResource("11_mixamo_lib")
+[node name="EnemyVisual/AnimationPlayer" type="AnimationPlayer" parent="EnemyCharacterBody3D/EnemyVisual"]
 
 [node name="EnemyWeaponAttachment" type="BoneAttachment3D" parent="EnemyCharacterBody3D"]
 transform = Transform3D(-8.91023e-08, -1, 8.61511e-05, 8.14939e-08, -8.61622e-05, -1, 1, -1.05864e-07, 5.726e-08, -0.737829, 1.43559, -0.0617142)
@@ -509,7 +513,10 @@ shape = SubResource("BoxShape3D_xh4up")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
 script = ExtResource("11_mixamo_lib")
 
+[node name="DummyVisual/AnimationPlayer" type="AnimationPlayer" parent="DummyMannequin/DummyVisual"]
+
 [node name="ModelTintComponent" type="Node" parent="DummyMannequin"]
+tint_color = Color(1, 1, 0, 1)
 script = ExtResource("14_model_tint")
 
 [node name="HealthComponent" type="Node" parent="DummyMannequin"]

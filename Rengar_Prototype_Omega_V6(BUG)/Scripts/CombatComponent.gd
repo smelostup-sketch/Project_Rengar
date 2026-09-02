@@ -107,18 +107,21 @@ func _ready() -> void:
 		var static_hitbox_path := NodePath(attachment_name + "/Sword/WeaponHitbox")
 		var static_hitbox := owner_body.get_node_or_null(static_hitbox_path) as Area3D
 		if static_hitbox == null:
-			push_error("CombatComponent: не найден статический WeaponHitbox по пути " + str(static_hitbox_path))
-			return
+			push_warning("CombatComponent: не найден статический WeaponHitbox по пути " + str(static_hitbox_path) + " - возможно, ещё не загружен")
+			continue
 		var static_shape := static_hitbox.get_node_or_null("CollisionShape3D") as CollisionShape3D
 		if static_shape == null:
-			push_error("CombatComponent: в статическом WeaponHitbox нет CollisionShape3D")
-			return
+			push_warning("CombatComponent: в статическом WeaponHitbox нет CollisionShape3D")
+			continue
 		weapon_hitboxes.append(static_hitbox)
 		weapon_hitbox_shapes.append(static_shape)
 		static_hitbox.set_deferred("monitoring", false)
 		static_hitbox.set_deferred("monitorable", false)
 		static_shape.set_deferred("disabled", true)
 		static_hitbox.body_entered.connect(_on_static_weapon_hitbox_body_entered)
+	
+	if weapon_hitboxes.is_empty():
+		push_error("CombatComponent: не найдено ни одного WeaponHitbox!")
 
 func _physics_process(delta: float) -> void:
 	_update_block_timers(delta) # 🔑 ДОЛЖНО БЫТЬ ПЕРВЫМ

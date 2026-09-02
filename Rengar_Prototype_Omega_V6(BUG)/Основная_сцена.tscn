@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://Scripts/EnemyPerceptionComponent.gd" id="18_enemy_perception"]
 [ext_resource type="Script" path="res://Scripts/EnemyUtilityAIComponent.gd" id="19_enemy_utility"]
 [ext_resource type="Script" path="res://Scripts/EnemyAIDebugVisualizer.gd" id="20_enemy_ai_debug"]
+[ext_resource type="Script" path="res://Scripts/DummyEnemyController.gd" id="21_dummy_enemy"]
 [ext_resource type="Texture2D" uid="uid://bc06r1dr8xva3" path="res://Assets/grass_texture.png" id="21_grass_texture"]
 [ext_resource type="AudioStream" uid="uid://bj75w8cjc1ick" path="res://Assets/block_success_player.wav" id="22_block_player"]
 [ext_resource type="AudioStream" uid="uid://b2oi2j5wi2i68" path="res://Assets/block_success_enemy.wav" id="23_block_enemy"]
@@ -318,7 +319,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.412, 0)
 shape = SubResource("BoxShape3D_xh4up")
 
 [node name="VisualModel" parent="PLayerCharacterBody3D" instance=ExtResource("10_ybot")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.004, -0.5, 0)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.004, -0.9, 0)
 script = ExtResource("11_mixamo_lib")
 
 [node name="PlayerWeaponAttachment" type="BoneAttachment3D" parent="PLayerCharacterBody3D"]
@@ -393,6 +394,9 @@ script = ExtResource("12_mixamo_anim")
 libraries = {
 "": SubResource("AnimationLibrary_f4t0f")
 }
+autoplay = "Idle"
+
+[node name="VisualModel/AnimationPlayer" type="AnimationPlayer" parent="PLayerCharacterBody3D/VisualModel"]
 
 [node name="PlayerAnimTree" type="AnimationTree" parent="PLayerCharacterBody3D"]
 root_node = NodePath("../VisualModel")
@@ -401,7 +405,7 @@ anim_player = NodePath("../VisualModel/AnimationPlayer")
 parameters/Motion/blend_position = 0.0
 
 [node name="EnemyCharacterBody3D" type="CharacterBody3D" parent="." groups=["enemy"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1.7689)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.8689)
 collision_layer = 2
 script = ExtResource("8_sg8cj")
 
@@ -410,7 +414,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.412, 0)
 shape = SubResource("BoxShape3D_xh4up")
 
 [node name="EnemyVisual" parent="EnemyCharacterBody3D" instance=ExtResource("10_ybot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
 script = ExtResource("11_mixamo_lib")
+[node name="EnemyVisual/AnimationPlayer" type="AnimationPlayer" parent="EnemyCharacterBody3D/EnemyVisual"]
 
 [node name="EnemyWeaponAttachment" type="BoneAttachment3D" parent="EnemyCharacterBody3D"]
 transform = Transform3D(-8.91023e-08, -1, 8.61511e-05, 8.14939e-08, -8.61622e-05, -1, 1, -1.05864e-07, 5.726e-08, -0.737829, 1.43559, -0.0617142)
@@ -493,6 +499,37 @@ outline_size = 4
 
 [node name="EnemyAIDebugVisualizer" type="Node" parent="EnemyCharacterBody3D"]
 script = ExtResource("20_enemy_ai_debug")
+
+[node name="DummyMannequin" type="CharacterBody3D" parent="." groups=["dummy_enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, 5.0)
+collision_layer = 2
+script = ExtResource("21_dummy_enemy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DummyMannequin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.412, 0)
+shape = SubResource("BoxShape3D_xh4up")
+
+[node name="DummyVisual" parent="DummyMannequin" instance=ExtResource("10_ybot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
+script = ExtResource("11_mixamo_lib")
+
+[node name="DummyVisual/AnimationPlayer" type="AnimationPlayer" parent="DummyMannequin/DummyVisual"]
+
+[node name="ModelTintComponent" type="Node" parent="DummyMannequin"]
+tint_color = Color(1, 1, 0, 1)
+script = ExtResource("14_model_tint")
+
+[node name="HealthComponent" type="Node" parent="DummyMannequin"]
+script = ExtResource("3_gsjeh")
+
+[node name="CombatComponent" type="Node" parent="DummyMannequin"]
+script = ExtResource("4_omuuf")
+
+[node name="StateComponent" type="Node" parent="DummyMannequin"]
+script = ExtResource("5_02r1v")
+
+[node name="AnimationComponent" type="Node" parent="DummyMannequin"]
+script = ExtResource("13_enemy_anim")
 
 [node name="Bush" type="Area3D" parent="." groups=["bush"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51, -5)

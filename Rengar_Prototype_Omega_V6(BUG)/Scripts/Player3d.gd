@@ -9,7 +9,7 @@ extends CharacterBody3D
 
 @export_group("Character Speed")
 @export_range(0.1, 3.0, 0.05) var character_speed_multiplier: float = 1.0
-@export_range(0.1, 3.0, 0.05) var attack_animation_speed: float = 1.25
+@export_range(0.1, 3.0, 0.05) var attack_animation_speed: float = 3.75 # Ускорено на 200% от стандартного значения 1.25
 
 func _ready() -> void:
 	if state_comp:
@@ -26,9 +26,8 @@ func _ready() -> void:
 		combat_comp.hit_detected.connect(_on_hit_detected)
 
 func _physics_process(delta: float) -> void:
-	var cam = get_viewport().get_camera_3d()
-	if cam and cam.has_method("is_free_look_active") and cam.is_free_look_active():
-		rotation.y = lerp_angle(rotation.y, cam.get_view_yaw(), 12.0 * delta)
+	# Поворот игрока теперь полностью управляется камерой в ThirdPersonCamera.gd
+	# Камера ВСЕГДА управляется мышью, игрок следует за камерой (если не нажата тильда)
 
 	# 1. INPUT & STATE (решает ЧТО делать)
 	state_comp.process(delta)

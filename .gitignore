@@ -1,0 +1,15 @@
+```
+# Temporary files
+*.tmp
+0.*.tmp
+nod*.tmp
+"*\320\235\320\260\321\207*.tmp"
+
+# Backup files
+"*/backup"
+
+# Godot-specific
+*.import
+export_presets.cfg
+.user
+```

@@ -9,13 +9,16 @@ class_name ModelTintComponent
 @export var roughness := 0.72
 
 func _ready() -> void:
+	apply_tint(tint_color)
+
+func apply_tint(color: Color) -> void:
 	var target := get_node_or_null(target_path)
 	if target == null:
 		push_warning("ModelTintComponent: не найдена целевая модель")
 		return
 
 	var tint_material := StandardMaterial3D.new()
-	tint_material.albedo_color = tint_color
+	tint_material.albedo_color = color
 	tint_material.roughness = roughness
 
 	var meshes := target.find_children("", "MeshInstance3D", true, false)
@@ -27,3 +30,7 @@ func _ready() -> void:
 		var mesh := mesh_node as MeshInstance3D
 		if mesh != null and mesh.mesh != null:
 			mesh.material_override = tint_material
+
+func set_tint(color: Color) -> void:
+	tint_color = color
+	apply_tint(color)

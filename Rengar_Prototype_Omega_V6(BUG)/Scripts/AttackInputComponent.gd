@@ -39,15 +39,14 @@ func _ready() -> void:
 		return
 
 	combat_comp = get_node_or_null(combat_path) as CombatComponent
-	state_comp = get_node_or_null(state_path) as StateComponent
+	state_comp = get_node_or_null(state_path) as CombatComponent
 	animation_component = get_node_or_null(animation_component_path)
 	if combat_comp == null or state_comp == null:
 		push_error("AttackInputComponent: не найдены CombatComponent или StateComponent")
 		return
 
 	combat_comp.attack_cancelled.connect(_on_combat_attack_cancelled)
-	if animation_component != null and animation_component.has_signal("attack_animation_finished"):
-		animation_component.attack_animation_finished.connect(_on_attack_animation_finished)
+	combat_comp.attack_finished.connect(_on_attack_finished)
 	_trace("READY | delay=%.2fs threshold=%.2f" % [attack_start_delay, direction_threshold])
 
 func _physics_process(delta: float) -> void:
@@ -217,7 +216,7 @@ func _cancel_input(reason: String) -> void:
 func _on_combat_attack_cancelled(reason: String) -> void:
 	_cancel_input(reason)
 
-func _on_attack_animation_finished() -> void:
+func _on_attack_finished() -> void:
 	if input_state == InputState.ATTACKING:
 		input_state = InputState.IDLE
 		attack_sequence_finished.emit()

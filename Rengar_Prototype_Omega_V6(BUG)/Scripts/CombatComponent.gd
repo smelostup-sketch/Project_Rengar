@@ -4,6 +4,7 @@ class_name CombatComponent
 # === СИГНАЛЫ ===
 signal attack_started(direction: String, is_leap_attack: bool)
 signal attack_cancelled(reason: String)
+signal attack_finished()
 signal attack_performed(direction: String, is_leap_attack: bool)
 signal hit_detected(target: Node)
 signal block_active_changed(is_active: bool)
@@ -107,18 +108,21 @@ func _ready() -> void:
 		var static_hitbox_path := NodePath(attachment_name + "/Sword/WeaponHitbox")
 		var static_hitbox := owner_body.get_node_or_null(static_hitbox_path) as Area3D
 		if static_hitbox == null:
-			push_error("CombatComponent: не найден статический WeaponHitbox по пути " + str(static_hitbox_path))
-			return
+			push_warning("CombatComponent: не найден статический WeaponHitbox по пути " + str(static_hitbox_path) + " - возможно, ещё не загружен")
+			continue
 		var static_shape := static_hitbox.get_node_or_null("CollisionShape3D") as CollisionShape3D
 		if static_shape == null:
-			push_error("CombatComponent: в статическом WeaponHitbox нет CollisionShape3D")
-			return
+			push_warning("CombatComponent: в статическом WeaponHitbox нет CollisionShape3D")
+			continue
 		weapon_hitboxes.append(static_hitbox)
 		weapon_hitbox_shapes.append(static_shape)
 		static_hitbox.set_deferred("monitoring", false)
 		static_hitbox.set_deferred("monitorable", false)
 		static_shape.set_deferred("disabled", true)
 		static_hitbox.body_entered.connect(_on_static_weapon_hitbox_body_entered)
+	
+	if weapon_hitboxes.is_empty():
+		push_error("CombatComponent: не найдено ни одного WeaponHitbox!")
 
 func _physics_process(delta: float) -> void:
 	_update_block_timers(delta) # 🔑 ДОЛЖНО БЫТЬ ПЕРВЫМ
@@ -290,6 +294,9 @@ func _on_enemy_weapon_hitbox_body_entered(body: Node) -> void:
 		return
 	if body == owner_body or body.is_in_group("enemy"):
 		return
+	# Враги игнорируют манекенов (dummy_enemy) - не атакуют их
+	if body.is_in_group("dummy_enemy"):
+		return
 	if body.has_method("is_blocking_active") and body.is_blocking_active(attack_dir):
 		hit_registered = true
 		if body.has_method("notify_successful_block"):
@@ -405,9 +412,19 @@ func enemy_on_block() -> void:
 	ai_state = "IDLE"
 
 func enemy_on_take_dmg(amount: float, attacker_pos: Vector3 = Vector3.ZERO) -> void:
-	if attack_delay_timer > 0.05:
+	# Проверка на прерывание атаки только если враг не в состоянии атаки (WINDUP/SWING)
+	# Это предотвращает ложное прерывание атаки при получении урона во время WINDUP или SWING
+	if ai_state not in ["WINDUP", "SWING"] and attack_delay_timer > 0.05:
 		return
-	attack_delay_timer = attack_delay_duration
+	
+	# Если враг уже в процессе атаки (WINDUP или SWING), не прерываем её получением урона
+	# Атака будет завершена нормально, а откат начнётся после завершения
+	if ai_state in ["WINDUP", "SWING"]:
+		_trace("ENEMY_DAMAGE_DURING_ATTACK | ignoring delay timer")
+		# Не устанавливаем attack_delay_timer, чтобы не прерывать атаку
+	else:
+		attack_delay_timer = attack_delay_duration
+	
 	# Полученный урон прерывает visual attack; статический Area3D должен
 	# выключиться, даже если clip не дошёл до своего disable Method Track.
 	animation_disable_weapon_hitbox()

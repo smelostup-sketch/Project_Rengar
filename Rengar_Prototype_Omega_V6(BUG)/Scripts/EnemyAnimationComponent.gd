@@ -26,9 +26,16 @@ func _ready() -> void:
 	combat_comp = owner_body.get_node_or_null("CombatComponent") as CombatComponent
 	var visual_model := get_node_or_null(visual_model_path) as Node3D
 	if visual_model != null:
+		# Пробуем найти AnimationPlayer разными способами
 		animation_player = visual_model.get_node_or_null("AnimationPlayer") as AnimationPlayer
+		if animation_player == null:
+			# Возможно AnimationPlayer является прямым потомком visual_model с другим именем
+			for child in visual_model.get_children():
+				if child is AnimationPlayer:
+					animation_player = child as AnimationPlayer
+					break
 	if animation_player == null:
-		push_error("EnemyAnimationComponent: в EnemyVisual не найден AnimationPlayer")
+		push_error("EnemyAnimationComponent: в EnemyVisual не найден AnimationPlayer. Проверьте структуру узла " + str(visual_model_path))
 		return
 
 	if combat_comp != null:

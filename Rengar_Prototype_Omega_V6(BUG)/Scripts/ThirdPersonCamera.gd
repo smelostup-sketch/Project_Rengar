@@ -34,7 +34,9 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and (event.keycode == free_look_key or event.physical_keycode == free_look_key) and not event.echo:
 		free_look_active = event.pressed
 		return
-	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED and free_look_active:
+	
+	# Камера ВСЕГДА управляется мышью (и в обычном режиме, и в режиме свободного обзора)
+	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		yaw -= event.relative.x * mouse_sens
 		pitch += event.relative.y * mouse_sens
 		pitch = clampf(pitch, deg_to_rad(-pitch_limit), deg_to_rad(pitch_limit))
@@ -54,8 +56,13 @@ func _process(_delta: float) -> void:
 	if player_ref == null:
 		return
 
+	# В обычном режиме (free_look_active = false) игрок плавно поворачивается к направлению камеры
+	# При активном свободном обзоре (тильда нажата) игрок НЕ поворачивается автоматически
+	# Направление камеры (yaw) обновляется в _input() ВСЕГДА при движении мыши
 	if not free_look_active:
-		yaw = player_ref.global_rotation.y
+		# Игрок следует за камерой
+		player_ref.rotation.y = lerp_angle(player_ref.rotation.y, yaw, 12.0 * _delta)
+	
 	var look_target := player_ref.global_position + Vector3.UP * target_height
 	var camera_direction := Vector3(
 		sin(yaw) * cos(pitch),

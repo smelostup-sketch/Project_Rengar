@@ -4,6 +4,7 @@ class_name CombatComponent
 # === СИГНАЛЫ ===
 signal attack_started(direction: String, is_leap_attack: bool)
 signal attack_cancelled(reason: String)
+signal attack_finished()
 signal attack_performed(direction: String, is_leap_attack: bool)
 signal hit_detected(target: Node)
 signal block_active_changed(is_active: bool)

@@ -39,7 +39,7 @@ func _ready() -> void:
 		return
 
 	combat_comp = get_node_or_null(combat_path) as CombatComponent
-	state_comp = get_node_or_null(state_path) as CombatComponent
+	state_comp = get_node_or_null(state_path) as StateComponent
 	animation_component = get_node_or_null(animation_component_path)
 	if combat_comp == null or state_comp == null:
 		push_error("AttackInputComponent: не найдены CombatComponent или StateComponent")

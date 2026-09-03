@@ -1,10 +1,25 @@
 ```
-# Temporary files
-*.tmp
-0.*.tmp
-nod*.tmp
-"Rengar_Prototype_Omega_V6(BUG)/\\320\\235\\320\\260\\321\\207*.tmp"
-
-# Backup files
-"Rengar_Prototype_Omega_V6(BUG)/backup"
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```

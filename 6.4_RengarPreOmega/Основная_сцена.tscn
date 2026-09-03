@@ -1,0 +1,562 @@
+[gd_scene format=3 uid="uid://jxsxm4a8vmd6"]
+
+[ext_resource type="Script" uid="uid://d0dosd04kbsr4" path="res://Scripts/ThirdPersonCamera.gd" id="1_nsn7b"]
+[ext_resource type="Script" uid="uid://vqv72m1x2m1q" path="res://Scripts/Player3d.gd" id="2_xm56r"]
+[ext_resource type="Script" uid="uid://2xq8vm7jr62h" path="res://Scripts/HealtComponent.gd" id="3_gsjeh"]
+[ext_resource type="Script" uid="uid://bji774p7acj6b" path="res://Scripts/CombatComponent.gd" id="4_omuuf"]
+[ext_resource type="Script" uid="uid://b7u3wp7sobtpn" path="res://Scripts/StateComponent.gd" id="5_02r1v"]
+[ext_resource type="Script" uid="uid://najn16reqsal" path="res://Scripts/StacksComponent.gd" id="6_0oux2"]
+[ext_resource type="Script" uid="uid://22b1aiycsr4q" path="res://Scripts/EnemyController.gd" id="8_sg8cj"]
+[ext_resource type="Script" uid="uid://c141jwlxp1ab3" path="res://Scripts/PlayerUI.gd" id="9_8ej3n"]
+[ext_resource type="PackedScene" uid="uid://cnly52cl66iel" path="res://Assets/Mixamo/Y Bot.fbx" id="10_ybot"]
+[ext_resource type="Script" uid="uid://cuuvmd1qd5sbw" path="res://Scripts/MixamoAnimationLibrary.gd" id="11_mixamo_lib"]
+[ext_resource type="Script" uid="uid://bxkl42xr5o181" path="res://Scripts/MixamoAnimationComponent.gd" id="12_mixamo_anim"]
+[ext_resource type="Script" uid="uid://blkyc83x8wejd" path="res://Scripts/EnemyAnimationComponent.gd" id="13_enemy_anim"]
+[ext_resource type="Script" uid="uid://bpafajirk6ajh" path="res://Scripts/ModelTintComponent.gd" id="14_model_tint"]
+[ext_resource type="Script" uid="uid://co6ysluvm0o2d" path="res://Scripts/AttackInputComponent.gd" id="15_attack_input"]
+[ext_resource type="Script" uid="uid://2t3jgb8ueux2" path="res://Scripts/CombatDebugVisualizer.gd" id="16_combat_debug"]
+[ext_resource type="Script" uid="uid://5wty38v77tiw" path="res://Scripts/EnemyMemoryComponent.gd" id="17_enemy_memory"]
+[ext_resource type="Script" uid="uid://oy2iyva8olqc" path="res://Scripts/EnemyPerceptionComponent.gd" id="18_enemy_perception"]
+[ext_resource type="Script" uid="uid://bi0essxkaqmik" path="res://Scripts/EnemyUtilityAIComponent.gd" id="19_enemy_utility"]
+[ext_resource type="Script" uid="uid://d3jeb14v45mnj" path="res://Scripts/EnemyAIDebugVisualizer.gd" id="20_enemy_ai_debug"]
+[ext_resource type="Script" uid="uid://cj877r1rvfvo4" path="res://Scripts/DummyEnemyController.gd" id="21_dummy_enemy"]
+[ext_resource type="Texture2D" uid="uid://bc06r1dr8xva3" path="res://Assets/grass_texture.png" id="21_grass_texture"]
+[ext_resource type="AudioStream" uid="uid://bj75w8cjc1ick" path="res://Assets/block_success_player.wav" id="22_block_player"]
+[ext_resource type="AudioStream" uid="uid://b2oi2j5wi2i68" path="res://Assets/block_success_enemy.wav" id="23_block_enemy"]
+[ext_resource type="Texture2D" uid="uid://dealyvufa3nq5" path="res://Assets/bush_texture.png" id="24_bush_texture"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xh4up"]
+size = Vector3(0.996826, 1.82391, 0.376465)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_player_sword"]
+albedo_color = Color(0.48, 0.52, 0.58, 1)
+metallic = 0.8
+roughness = 0.28
+
+[sub_resource type="BoxMesh" id="BoxMesh_player_sword"]
+material = SubResource("StandardMaterial3D_player_sword")
+size = Vector3(0.12, 1.2, 0.18)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_player_weapon"]
+size = Vector3(0.48, 1.28, 0.42)
+
+[sub_resource type="Animation" id="Animation_j4h6f"]
+resource_name = "Atk_Left"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_idpwu"]
+resource_name = "Atk_Right"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_734nt"]
+resource_name = "Atk_Up"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_hajmr"]
+resource_name = "Block_Left"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_ug0kx"]
+resource_name = "Block_Right"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_1laot"]
+resource_name = "Block_Up"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_jvgj3"]
+resource_name = "Dash_A"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_c1eef"]
+resource_name = "Dash_D"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_nvvek"]
+resource_name = "Dash_S"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_8le78"]
+resource_name = "Dash_W"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_nl152"]
+resource_name = "Dodge_AE"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_tkwcf"]
+resource_name = "Dodge_AQ"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_wy6ld"]
+resource_name = "Dodge_DE"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_nlguj"]
+resource_name = "Dodge_DQ"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_5vldo"]
+resource_name = "Dodge_SE"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_c8v7u"]
+resource_name = "Dodge_SQ"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_kjkvm"]
+resource_name = "Dodge_WE"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_u2dg5"]
+resource_name = "Dodge_WQ"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_mhmw0"]
+resource_name = "HitReact"
+length = 0.5
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_0d8t6"]
+resource_name = "Idle"
+loop_mode = 1
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_hfflg"]
+length = 0.001
+
+[sub_resource type="Animation" id="Animation_rqhn0"]
+
+[sub_resource type="Animation" id="Animation_e83t4"]
+resource_name = "Strafe_L"
+loop_mode = 1
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_1emja"]
+resource_name = "Strafe_R"
+loop_mode = 1
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_hyqmi"]
+resource_name = "TEMP"
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_yjgug"]
+resource_name = "Walk_Bwd"
+loop_mode = 1
+step = 0.1
+
+[sub_resource type="Animation" id="Animation_csya2"]
+resource_name = "Walk_Fwd"
+loop_mode = 1
+step = 0.1
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_f4t0f"]
+_data = {
+&"Atk_Left": SubResource("Animation_j4h6f"),
+&"Atk_Right": SubResource("Animation_idpwu"),
+&"Atk_Up": SubResource("Animation_734nt"),
+&"Block_Left": SubResource("Animation_hajmr"),
+&"Block_Right": SubResource("Animation_ug0kx"),
+&"Block_Up": SubResource("Animation_1laot"),
+&"Dash_A": SubResource("Animation_jvgj3"),
+&"Dash_D": SubResource("Animation_c1eef"),
+&"Dash_S": SubResource("Animation_nvvek"),
+&"Dash_W": SubResource("Animation_8le78"),
+&"Dodge_AE": SubResource("Animation_nl152"),
+&"Dodge_AQ": SubResource("Animation_tkwcf"),
+&"Dodge_DE": SubResource("Animation_wy6ld"),
+&"Dodge_DQ": SubResource("Animation_nlguj"),
+&"Dodge_SE": SubResource("Animation_5vldo"),
+&"Dodge_SQ": SubResource("Animation_c8v7u"),
+&"Dodge_WE": SubResource("Animation_kjkvm"),
+&"Dodge_WQ": SubResource("Animation_u2dg5"),
+&"HitReact": SubResource("Animation_mhmw0"),
+&"Idle": SubResource("Animation_0d8t6"),
+&"RESET": SubResource("Animation_hfflg"),
+&"Running Jump": SubResource("Animation_rqhn0"),
+&"Strafe_L": SubResource("Animation_e83t4"),
+&"Strafe_R": SubResource("Animation_1emja"),
+&"TEMP": SubResource("Animation_hyqmi"),
+&"Walk_Bwd": SubResource("Animation_yjgug"),
+&"Walk_Fwd": SubResource("Animation_csya2")
+}
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mixamo_attack_left"]
+animation = &"AttackLeft"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mixamo_attack_right"]
+animation = &"AttackRight"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mixamo_attack_up"]
+animation = &"AttackUp"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mixamo_hitreact"]
+animation = &"HitReact"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mixamo_jump"]
+animation = &"Jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mixamo_idle"]
+animation = &"Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_mixamo_run"]
+animation = &"Run"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_mixamo_motion"]
+min_space = 0.0
+blend_point_0/node = SubResource("AnimationNodeAnimation_mixamo_idle")
+blend_point_0/pos = 0.0
+blend_point_0/name = &"0"
+blend_point_1/node = SubResource("AnimationNodeAnimation_mixamo_run")
+blend_point_1/pos = 1.0
+blend_point_1/name = &"1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_motion_jump"]
+xfade_time = 0.08
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_jump_motion"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_motion_hitreact"]
+xfade_time = 0.04
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_hitreact_motion"]
+xfade_time = 0.12
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_motion_attack_left"]
+xfade_time = 0.04
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_attack_left_motion"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_motion_attack_right"]
+xfade_time = 0.04
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_attack_right_motion"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_motion_attack_up"]
+xfade_time = 0.04
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_attack_up_motion"]
+xfade_time = 0.1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_attack_left_right"]
+xfade_time = 0.04
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_mixamo_attack_right_left"]
+xfade_time = 0.04
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_mixamo_root"]
+states/AttackLeft/node = SubResource("AnimationNodeAnimation_mixamo_attack_left")
+states/AttackLeft/position = Vector2(690, 310)
+states/AttackRight/node = SubResource("AnimationNodeAnimation_mixamo_attack_right")
+states/AttackRight/position = Vector2(690, 410)
+states/AttackUp/node = SubResource("AnimationNodeAnimation_mixamo_attack_up")
+states/AttackUp/position = Vector2(690, 510)
+states/HitReact/node = SubResource("AnimationNodeAnimation_mixamo_hitreact")
+states/HitReact/position = Vector2(358, 244)
+states/Jump/node = SubResource("AnimationNodeAnimation_mixamo_jump")
+states/Jump/position = Vector2(692, 108)
+states/Motion/node = SubResource("AnimationNodeBlendSpace1D_mixamo_motion")
+states/Motion/position = Vector2(358, 108)
+transitions = ["Motion", "Jump", SubResource("AnimationNodeStateMachineTransition_mixamo_motion_jump"), "Jump", "Motion", SubResource("AnimationNodeStateMachineTransition_mixamo_jump_motion"), "Motion", "HitReact", SubResource("AnimationNodeStateMachineTransition_mixamo_motion_hitreact"), "HitReact", "Motion", SubResource("AnimationNodeStateMachineTransition_mixamo_hitreact_motion"), "Motion", "AttackLeft", SubResource("AnimationNodeStateMachineTransition_mixamo_motion_attack_left"), "AttackLeft", "Motion", SubResource("AnimationNodeStateMachineTransition_mixamo_attack_left_motion"), "Motion", "AttackRight", SubResource("AnimationNodeStateMachineTransition_mixamo_motion_attack_right"), "AttackRight", "Motion", SubResource("AnimationNodeStateMachineTransition_mixamo_attack_right_motion"), "Motion", "AttackUp", SubResource("AnimationNodeStateMachineTransition_mixamo_motion_attack_up"), "AttackUp", "Motion", SubResource("AnimationNodeStateMachineTransition_mixamo_attack_up_motion"), "AttackLeft", "AttackRight", SubResource("AnimationNodeStateMachineTransition_mixamo_attack_left_right"), "AttackRight", "AttackLeft", SubResource("AnimationNodeStateMachineTransition_mixamo_attack_right_left")]
+graph_offset = Vector2(-67.0384, 58.3447)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_enemy_sword"]
+albedo_color = Color(0.38, 0.12, 0.56, 1)
+metallic = 0.65
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="BoxMesh_enemy_sword"]
+material = SubResource("StandardMaterial3D_enemy_sword")
+size = Vector3(0.12, 1.2, 0.18)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_enemy_weapon"]
+size = Vector3(0.48, 1.28, 0.42)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0a3ws"]
+shading_mode = 0
+albedo_color = Color(0.72, 0.9, 0.62, 1)
+albedo_texture = ExtResource("24_bush_texture")
+uv1_scale = Vector3(2, 2, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_bwk1c"]
+material = SubResource("StandardMaterial3D_0a3ws")
+size = Vector2(6, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l1bxr"]
+size = Vector3(6, 6, 6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fk5tx"]
+size = Vector3(40, 1, 40)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_grass"]
+shading_mode = 0
+albedo_color = Color(0.72, 0.9, 0.62, 1)
+albedo_texture = ExtResource("21_grass_texture")
+uv1_scale = Vector3(8, 8, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_us6wj"]
+material = SubResource("StandardMaterial3D_ground_grass")
+size = Vector3(40, 1, 40)
+
+[node name="World" type="Node3D" unique_id=847809201]
+
+[node name="CombatDebugVisualizer" type="Node3D" parent="." unique_id=113940598]
+script = ExtResource("16_combat_debug")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1529168969]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 5)
+script = ExtResource("1_nsn7b")
+target = NodePath("../PLayerCharacterBody3D")
+
+[node name="PLayerCharacterBody3D" type="CharacterBody3D" parent="." unique_id=2050237186 groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("2_xm56r")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PLayerCharacterBody3D" unique_id=301093045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.412, 0)
+shape = SubResource("BoxShape3D_xh4up")
+
+[node name="VisualModel" parent="PLayerCharacterBody3D" unique_id=301106724 instance=ExtResource("10_ybot")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0.004, -0.9, 0)
+script = ExtResource("11_mixamo_lib")
+
+[node name="VisualModel/AnimationPlayer" type="AnimationPlayer" parent="PLayerCharacterBody3D/VisualModel" unique_id=69058888]
+
+[node name="PlayerWeaponAttachment" type="BoneAttachment3D" parent="PLayerCharacterBody3D" unique_id=892495482]
+transform = Transform3D(1.6697115e-09, 0.99999994, -8.615106e-05, 8.102838e-08, -8.616224e-05, -0.9999999, -0.99999994, 1.8441476e-08, -5.678679e-08, 0.74182886, 0.5355915, 0.061714105)
+bone_name = "mixamorig_RightHand"
+bone_idx = 34
+use_external_skeleton = true
+external_skeleton = NodePath("../VisualModel/Skeleton3D")
+
+[node name="Sword" type="MeshInstance3D" parent="PLayerCharacterBody3D/PlayerWeaponAttachment" unique_id=2048286254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("BoxMesh_player_sword")
+
+[node name="WeaponHitbox" type="Area3D" parent="PLayerCharacterBody3D/PlayerWeaponAttachment/Sword" unique_id=1995496820]
+collision_layer = 0
+collision_mask = 6
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PLayerCharacterBody3D/PlayerWeaponAttachment/Sword/WeaponHitbox" unique_id=1690179796]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_player_weapon")
+disabled = true
+
+[node name="PlayerLeftWeaponAttachment" type="BoneAttachment3D" parent="PLayerCharacterBody3D" unique_id=1918462291]
+transform = Transform3D(-7.3226283e-07, -1, -8.838065e-05, 1.0010443e-08, 8.84179e-05, -1, 1.0000001, -8.226536e-07, 3.9577323e-08, -0.73376995, 0.53572047, 0.061713994)
+bone_name = "mixamorig_LeftHand"
+bone_idx = 10
+use_external_skeleton = true
+external_skeleton = NodePath("../VisualModel/Skeleton3D")
+
+[node name="Sword" type="MeshInstance3D" parent="PLayerCharacterBody3D/PlayerLeftWeaponAttachment" unique_id=700600758]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("BoxMesh_player_sword")
+
+[node name="WeaponHitbox" type="Area3D" parent="PLayerCharacterBody3D/PlayerLeftWeaponAttachment/Sword" unique_id=445667692]
+collision_layer = 0
+collision_mask = 6
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PLayerCharacterBody3D/PlayerLeftWeaponAttachment/Sword/WeaponHitbox" unique_id=20194161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_player_weapon")
+disabled = true
+
+[node name="BlockSuccessAudio" type="AudioStreamPlayer3D" parent="PLayerCharacterBody3D" unique_id=224128118]
+stream = ExtResource("22_block_player")
+volume_db = -8.0
+unit_size = 8.0
+max_distance = 20.0
+
+[node name="HealthComponent" type="Node" parent="PLayerCharacterBody3D" unique_id=1028553863]
+script = ExtResource("3_gsjeh")
+
+[node name="CombatComponent" type="Node" parent="PLayerCharacterBody3D" unique_id=1325231403]
+script = ExtResource("4_omuuf")
+
+[node name="StateComponent" type="Node" parent="PLayerCharacterBody3D" unique_id=613051912]
+script = ExtResource("5_02r1v")
+
+[node name="AttackInputComponent" type="Node" parent="PLayerCharacterBody3D" unique_id=447011884]
+script = ExtResource("15_attack_input")
+
+[node name="StacksComponent" type="Node" parent="PLayerCharacterBody3D" unique_id=1886477590]
+script = ExtResource("6_0oux2")
+
+[node name="AnimationComponent" type="Node" parent="PLayerCharacterBody3D" unique_id=1944745928]
+script = ExtResource("12_mixamo_anim")
+run_speed_for_full_blend = null
+movement_animation_speed = null
+attack_animation_speed = null
+attack_recovery_fallback = null
+
+[node name="PlayerAnim" type="AnimationPlayer" parent="PLayerCharacterBody3D" unique_id=628979509]
+libraries/ = SubResource("AnimationLibrary_f4t0f")
+autoplay = &"Idle"
+
+[node name="PlayerAnimTree" type="AnimationTree" parent="PLayerCharacterBody3D" unique_id=561417577]
+root_node = NodePath("../VisualModel")
+tree_root = SubResource("AnimationNodeStateMachine_mixamo_root")
+anim_player = NodePath("../VisualModel/AnimationPlayer")
+parameters/Motion/blend_position = 0.0
+
+[node name="EnemyCharacterBody3D" type="CharacterBody3D" parent="." unique_id=93543093 groups=["enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0.8689)
+collision_layer = 2
+script = ExtResource("8_sg8cj")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyCharacterBody3D" unique_id=209702529]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.412, 0)
+shape = SubResource("BoxShape3D_xh4up")
+
+[node name="EnemyVisual" parent="EnemyCharacterBody3D" unique_id=1165433359 instance=ExtResource("10_ybot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
+script = ExtResource("11_mixamo_lib")
+
+[node name="EnemyVisual/AnimationPlayer" type="AnimationPlayer" parent="EnemyCharacterBody3D/EnemyVisual" unique_id=416662049]
+
+[node name="EnemyWeaponAttachment" type="BoneAttachment3D" parent="EnemyCharacterBody3D" unique_id=2079937601]
+transform = Transform3D(-8.910233e-08, -0.99999994, 8.615106e-05, 8.1493944e-08, -8.616224e-05, -0.9999999, 0.99999994, -1.0586427e-07, 5.725998e-08, -0.73782885, 0.5355915, -0.061714172)
+bone_name = "mixamorig_RightHand"
+bone_idx = 34
+use_external_skeleton = true
+external_skeleton = NodePath("../EnemyVisual/Skeleton3D")
+
+[node name="Sword" type="MeshInstance3D" parent="EnemyCharacterBody3D/EnemyWeaponAttachment" unique_id=1157310383]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("BoxMesh_enemy_sword")
+
+[node name="WeaponHitbox" type="Area3D" parent="EnemyCharacterBody3D/EnemyWeaponAttachment/Sword" unique_id=1266375118]
+collision_layer = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyCharacterBody3D/EnemyWeaponAttachment/Sword/WeaponHitbox" unique_id=1221416638]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_enemy_weapon")
+disabled = true
+
+[node name="EnemyLeftWeaponAttachment" type="BoneAttachment3D" parent="EnemyCharacterBody3D" unique_id=1773571686]
+transform = Transform3D(3.128172e-07, 1, 8.837506e-05, 9.780008e-09, 8.841418e-05, -1, -1.0000001, 3.8853574e-07, -3.9569596e-08, 0.73776996, 0.53572047, -0.061714232)
+bone_name = "mixamorig_LeftHand"
+bone_idx = 10
+use_external_skeleton = true
+external_skeleton = NodePath("../EnemyVisual/Skeleton3D")
+
+[node name="Sword" type="MeshInstance3D" parent="EnemyCharacterBody3D/EnemyLeftWeaponAttachment" unique_id=1871773527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+mesh = SubResource("BoxMesh_enemy_sword")
+
+[node name="WeaponHitbox" type="Area3D" parent="EnemyCharacterBody3D/EnemyLeftWeaponAttachment/Sword" unique_id=712601056]
+collision_layer = 0
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="EnemyCharacterBody3D/EnemyLeftWeaponAttachment/Sword/WeaponHitbox" unique_id=1462424129]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_enemy_weapon")
+disabled = true
+
+[node name="ModelTintComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=2086219676]
+script = ExtResource("14_model_tint")
+
+[node name="BlockSuccessAudio" type="AudioStreamPlayer3D" parent="EnemyCharacterBody3D" unique_id=674376772]
+stream = ExtResource("23_block_enemy")
+volume_db = -8.0
+unit_size = 8.0
+max_distance = 20.0
+
+[node name="HealthComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=1084426490]
+script = ExtResource("3_gsjeh")
+
+[node name="CombatComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=453952559]
+script = ExtResource("4_omuuf")
+
+[node name="StateComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=1369765976]
+script = ExtResource("5_02r1v")
+
+[node name="AnimationComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=115023629]
+script = ExtResource("13_enemy_anim")
+
+[node name="EnemyMemoryComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=1330026361]
+script = ExtResource("17_enemy_memory")
+
+[node name="EnemyPerceptionComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=1084765830]
+script = ExtResource("18_enemy_perception")
+
+[node name="EnemyUtilityAIComponent" type="Node" parent="EnemyCharacterBody3D" unique_id=1583467362]
+script = ExtResource("19_enemy_utility")
+
+[node name="UtilityAIThoughtLabel" type="Label3D" parent="EnemyCharacterBody3D" unique_id=1693382171]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.45, 0)
+no_depth_test = true
+modulate = Color(1, 0.92, 0.35, 1)
+font_size = 16
+outline_size = 4
+
+[node name="EnemyAIDebugVisualizer" type="Node" parent="EnemyCharacterBody3D" unique_id=393438639]
+script = ExtResource("20_enemy_ai_debug")
+
+[node name="DummyMannequin" type="CharacterBody3D" parent="." unique_id=1081939318 groups=["dummy_enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 1, 5)
+collision_layer = 2
+script = ExtResource("21_dummy_enemy")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DummyMannequin" unique_id=438813560]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.412, 0)
+shape = SubResource("BoxShape3D_xh4up")
+
+[node name="DummyVisual" parent="DummyMannequin" unique_id=961204639 instance=ExtResource("10_ybot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9, 0)
+script = ExtResource("11_mixamo_lib")
+
+[node name="DummyVisual/AnimationPlayer" type="AnimationPlayer" parent="DummyMannequin/DummyVisual" unique_id=1359897828]
+
+[node name="ModelTintComponent" type="Node" parent="DummyMannequin" unique_id=358722908]
+script = ExtResource("14_model_tint")
+
+[node name="HealthComponent" type="Node" parent="DummyMannequin" unique_id=1380509217]
+script = ExtResource("3_gsjeh")
+
+[node name="CombatComponent" type="Node" parent="DummyMannequin" unique_id=1417107683]
+script = ExtResource("4_omuuf")
+
+[node name="StateComponent" type="Node" parent="DummyMannequin" unique_id=1446304612]
+script = ExtResource("5_02r1v")
+
+[node name="AnimationComponent" type="Node" parent="DummyMannequin" unique_id=1464561385]
+script = ExtResource("13_enemy_anim")
+visual_model_path = NodePath("../DummyVisual")
+
+[node name="Bush" type="Area3D" parent="." unique_id=35404403 groups=["bush"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.51, -5)
+
+[node name="BushMarker" type="MeshInstance3D" parent="Bush" unique_id=2023072355]
+mesh = SubResource("PlaneMesh_bwk1c")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bush" unique_id=304185218]
+shape = SubResource("BoxShape3D_l1bxr")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1443329757]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.360961, 2.14581, 0.108824)
+light_energy = 1.5
+
+[node name="PlayerUI" type="CanvasLayer" parent="." unique_id=991475073 groups=["player_ui"]]
+script = ExtResource("9_8ej3n")
+
+[node name="Ground" type="StaticBody3D" parent="." unique_id=195585103]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1461319953]
+shape = SubResource("BoxShape3D_fk5tx")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=1876863554]
+mesh = SubResource("BoxMesh_us6wj")
